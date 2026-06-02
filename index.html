@@ -46,7 +46,7 @@
     }
     h1 { margin: 0; font-size: 22px; line-height: 1.2; }
     .meta { color: var(--muted); font-size: 12px; margin-top: 4px; }
-    .share {
+    .share, .nav-link {
       border: 1px solid var(--line);
       background: var(--panel);
       color: var(--text);
@@ -56,7 +56,13 @@
       cursor: pointer;
       box-shadow: var(--shadow);
       white-space: nowrap;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font: inherit;
     }
+    .top-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
     .controls {
       display: grid;
       grid-template-columns: minmax(220px, 360px) 1fr;
@@ -163,7 +169,10 @@
           <h1>2026年 女子給検索</h1>
           <div class="meta" id="meta">読み込み中</div>
         </div>
-        <button class="share" id="shareButton" type="button">URLをコピー</button>
+        <div class="top-actions">
+          <a class="nav-link" href="./referral.html">紹介料計算へ</a>
+          <button class="share" id="shareButton" type="button">URLをコピー</button>
+        </div>
       </div>
       <div class="controls">
         <input id="searchInput" class="search" type="search" placeholder="名前で検索 例: さらん / るり / いちか">
@@ -214,6 +223,7 @@
               <th>OP</th>
               <th>G</th>
               <th>女子給</th>
+              <th>元表記</th>
               <th>シート</th>
             </tr>
           </thead>
@@ -238,9 +248,14 @@
 
     function recordsForView() {
       const q = normalize(state.query);
+      const matchedNames = q ? new Set(
+        state.data.records
+          .filter(record => normalize(record.name).includes(q) || normalize(record.originalName).includes(q))
+          .map(record => record.name)
+      ) : null;
       return state.data.records.filter(record => {
         const monthOk = state.month === 'all' || record.month === Number(state.month);
-        const queryOk = !q || normalize(record.name).includes(q);
+        const queryOk = !q || matchedNames.has(record.name);
         return monthOk && queryOk;
       });
     }
@@ -330,9 +345,10 @@
           <td>${row.op || ''}</td>
           <td>${row.guarantee || ''}</td>
           <td class="pay">${yen(row.girlsPay)}</td>
+          <td>${row.originalName && row.originalName !== row.name ? row.originalName : ''}</td>
           <td>${row.sheet}</td>
         </tr>
-      `).join('') : '<tr><td class="empty" colspan="7">該当する明細がありません</td></tr>';
+      `).join('') : '<tr><td class="empty" colspan="8">該当する明細がありません</td></tr>';
     }
 
     function render() {

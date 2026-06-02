@@ -1,0 +1,650 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>2026年 紹介料計算</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f9;
+      --panel: #fff;
+      --text: #172033;
+      --muted: #667085;
+      --line: #d9dee7;
+      --blue: #1f6feb;
+      --blue-soft: #e8f1ff;
+      --green: #177245;
+      --red: #c4233c;
+      --amber: #a15c00;
+      --shadow: 0 1px 2px rgba(16, 24, 40, .08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(246, 247, 249, .95);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(10px);
+    }
+    .wrap { width: min(1240px, calc(100vw - 28px)); margin: 0 auto; }
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 16px 0 12px;
+    }
+    h1 { margin: 0; font-size: 22px; line-height: 1.2; }
+    h2 { margin: 0; font-size: 16px; }
+    .meta { color: var(--muted); font-size: 12px; margin-top: 4px; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .button, button {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+      min-height: 36px;
+      border-radius: 6px;
+      padding: 0 12px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      white-space: nowrap;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font: inherit;
+    }
+    .button.primary, button.primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .button.danger, button.danger { color: var(--red); }
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(220px, 360px) 1fr;
+      gap: 12px;
+      padding-bottom: 14px;
+    }
+    input, select {
+      width: 100%;
+      height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--panel);
+      color: var(--text);
+      padding: 0 10px;
+      font-size: 14px;
+      box-shadow: var(--shadow);
+    }
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      box-shadow: none;
+      vertical-align: middle;
+    }
+    .tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+    .tab {
+      min-width: 64px;
+      height: 40px;
+      box-shadow: var(--shadow);
+    }
+    .tab.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+    main { padding: 18px 0 32px; }
+    .grid {
+      display: grid;
+      grid-template-columns: 370px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      align-items: baseline;
+    }
+    .panel-body { padding: 14px; }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 110px;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    .stack { display: grid; gap: 10px; }
+    .muted { color: var(--muted); font-size: 12px; }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+      min-height: 84px;
+    }
+    .stat .label { color: var(--muted); font-size: 12px; }
+    .stat .value { margin-top: 4px; font-size: 22px; font-weight: 700; }
+    .stat .sub { margin-top: 2px; color: var(--muted); font-size: 12px; }
+    .table-wrap { overflow: auto; max-height: 62vh; }
+    table { width: 100%; border-collapse: collapse; min-width: 880px; }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 9px 10px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    th {
+      position: sticky;
+      top: 0;
+      background: #f9fafb;
+      z-index: 1;
+      color: #344054;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    th:first-child, td:first-child, th:nth-child(2), td:nth-child(2) { text-align: left; }
+    tbody tr:hover { background: var(--blue-soft); }
+    .pay { font-weight: 700; color: var(--green); }
+    .fee { font-weight: 700; color: var(--blue); }
+    .carry { color: var(--red); font-weight: 700; }
+    .unpaid { color: var(--amber); font-weight: 700; }
+    .paid { color: var(--green); font-weight: 700; }
+    .empty { padding: 28px; text-align: center; color: var(--muted); }
+    .ref-list { display: grid; gap: 8px; }
+    .ref-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 14px 1fr auto;
+      gap: 8px;
+      align-items: center;
+    }
+    .swatch { width: 14px; height: 36px; border-radius: 4px; }
+    .ref-name { font-weight: 700; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      border-radius: 999px;
+      padding: 0 8px;
+      font-size: 12px;
+      background: #eef2f7;
+      color: #344054;
+      margin-left: 4px;
+    }
+    .assign-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .note {
+      color: var(--muted);
+      font-size: 12px;
+      margin-top: -6px;
+      margin-bottom: 14px;
+    }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+      .controls { grid-template-columns: 1fr; }
+      .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .topbar { grid-template-columns: 1fr; }
+      .actions { justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="topbar">
+        <div>
+          <h1>2026年 紹介料計算</h1>
+          <div class="meta" id="meta">読み込み中</div>
+        </div>
+        <div class="actions">
+          <a class="button" href="./">女子給検索へ</a>
+          <button id="copyUrl" type="button">URLをコピー</button>
+        </div>
+      </div>
+      <div class="controls">
+        <input id="searchInput" type="search" placeholder="キャスト名・紹介者名で検索">
+        <div class="tabs" id="monthTabs"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="summary-grid" id="summaryGrid"></div>
+    <div class="note">保存先はこのブラウザ内です。別端末でも同じ設定を共有するには、後でサーバー保存に切り替える必要があります。</div>
+
+    <div class="grid">
+      <aside>
+        <section class="panel">
+          <div class="panel-head">
+            <h2>紹介者登録</h2>
+          </div>
+          <div class="panel-body">
+            <div class="form-grid">
+              <input id="refName" placeholder="紹介者名">
+              <input id="refPercent" type="number" min="0" step="0.1" placeholder="%">
+            </div>
+            <button class="primary" id="saveRef" type="button">紹介者を保存</button>
+            <div class="muted" style="margin-top:8px;">既存名で保存すると％を更新します。</div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>紹介者一覧</h2>
+            <span class="muted" id="refCount"></span>
+          </div>
+          <div class="panel-body">
+            <div class="ref-list" id="refList"></div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2>割当</h2>
+          </div>
+          <div class="panel-body stack">
+            <select id="assignRef"></select>
+            <button class="primary" id="assignSelected" type="button">チェックした子を割当</button>
+            <button id="clearSelected" type="button">チェックした子の割当解除</button>
+            <div class="muted">チェックしたキャストを選択中の紹介者へ紐づけます。</div>
+          </div>
+        </section>
+      </aside>
+
+      <section>
+        <section class="panel">
+          <div class="panel-head">
+            <h2 id="settlementTitle">紹介者別精算</h2>
+            <span class="muted" id="settlementCount"></span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>紹介者</th>
+                  <th>%</th>
+                  <th>女の子</th>
+                  <th>女子給合計</th>
+                  <th>当月紹介料</th>
+                  <th>前月以前繰越</th>
+                  <th>精算額</th>
+                  <th>支払済</th>
+                </tr>
+              </thead>
+              <tbody id="settlementBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head">
+            <h2 id="castTitle">キャスト別</h2>
+            <span class="muted" id="castCount"></span>
+          </div>
+          <div class="assign-row panel-body" style="border-bottom:1px solid var(--line);">
+            <span class="muted">月内女子給があるキャストを表示。チェックして紹介者へ割当できます。</span>
+            <button id="toggleAll" type="button">表示中を全選択</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>選択</th>
+                  <th>名前</th>
+                  <th>紹介者</th>
+                  <th>出勤日数</th>
+                  <th>件数</th>
+                  <th>個人売上</th>
+                  <th>女子給</th>
+                  <th>紹介料</th>
+                  <th>精算状況</th>
+                </tr>
+              </thead>
+              <tbody id="castBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const STORAGE_KEY = 'girls-pay-referral-v1';
+    const COLORS = ['#fde2e2', '#e0f2fe', '#dcfce7', '#fef3c7', '#ede9fe', '#ffe4e6', '#ccfbf1', '#f5e8d8', '#e7e5e4', '#dbeafe'];
+    const yen = value => `${Math.round(Number(value || 0)).toLocaleString('ja-JP')}円`;
+    const normalize = value => String(value || '').toLowerCase().normalize('NFKC').replace(/\s+/g, '');
+    const state = { data: null, month: 5, query: '', selected: new Set(), store: loadStore() };
+
+    function loadStore() {
+      try {
+        const parsed = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        return {
+          referrers: Array.isArray(parsed.referrers) ? parsed.referrers : [],
+          assignments: parsed.assignments || {},
+          payments: parsed.payments || {}
+        };
+      } catch {
+        return { referrers: [], assignments: {}, payments: {} };
+      }
+    }
+    function saveStore() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state.store));
+    }
+    function refById(id) {
+      return state.store.referrers.find(ref => ref.id === id);
+    }
+    function monthKey(month, refId) {
+      return `2026-${String(month).padStart(2, '0')}|${refId}`;
+    }
+    function fee(pay, percent) {
+      return Math.round(Number(pay || 0) * Number(percent || 0) / 100);
+    }
+
+    async function loadData() {
+      const response = await fetch('./girls-pay-2026.json', { cache: 'no-store' });
+      state.data = await response.json();
+      state.month = Math.max(...state.data.months);
+      document.getElementById('meta').textContent = `${state.data.year}年 / ${state.data.records.length.toLocaleString('ja-JP')}件 / 紹介者設定はブラウザ保存`;
+      renderTabs();
+      render();
+    }
+
+    function monthlyCastRows(month) {
+      const map = new Map();
+      for (const record of state.data.records) {
+        if (record.month !== month) continue;
+        if (!map.has(record.name)) map.set(record.name, { name: record.name, dates: new Set(), records: 0, sales: 0, girlsPay: 0 });
+        const row = map.get(record.name);
+        row.dates.add(record.date);
+        row.records += 1;
+        row.sales += Number(record.sales || 0);
+        row.girlsPay += Number(record.girlsPay || 0);
+      }
+      return [...map.values()].sort((a, b) => b.girlsPay - a.girlsPay || a.name.localeCompare(b.name, 'ja'));
+    }
+
+    function castRef(name) {
+      return refById(state.store.assignments[name]);
+    }
+
+    function matchingCastNames(month, query) {
+      const q = normalize(query);
+      if (!q) return null;
+      return new Set(
+        state.data.records
+          .filter(record => record.month === month)
+          .filter(record => normalize(record.name).includes(q) || normalize(record.originalName).includes(q))
+          .map(record => record.name)
+      );
+    }
+
+    function filteredCastRows() {
+      const q = normalize(state.query);
+      const matchedNames = matchingCastNames(state.month, state.query);
+      return monthlyCastRows(state.month).filter(row => {
+        const ref = castRef(row.name);
+        return !q || matchedNames.has(row.name) || normalize(ref?.name).includes(q);
+      });
+    }
+
+    function assignedRowsFor(refId, month) {
+      return monthlyCastRows(month).filter(row => state.store.assignments[row.name] === refId);
+    }
+
+    function settlementFor(ref, month) {
+      const rows = assignedRowsFor(ref.id, month);
+      const girlsPay = rows.reduce((sum, row) => sum + row.girlsPay, 0);
+      const currentFee = fee(girlsPay, ref.percent);
+      let carry = 0;
+      for (const m of state.data.months) {
+        if (m >= month) continue;
+        const priorRows = assignedRowsFor(ref.id, m);
+        const priorPay = priorRows.reduce((sum, row) => sum + row.girlsPay, 0);
+        const priorFee = fee(priorPay, ref.percent);
+        if (priorFee && !state.store.payments[monthKey(m, ref.id)]) carry += priorFee;
+      }
+      return { rows, girlsPay, currentFee, carry, total: currentFee + carry };
+    }
+
+    function renderTabs() {
+      const tabs = document.getElementById('monthTabs');
+      tabs.innerHTML = state.data.months.map(month => `<button type="button" class="tab ${state.month === month ? 'active' : ''}" data-month="${month}">${month}月</button>`).join('');
+      tabs.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', () => {
+          state.month = Number(button.dataset.month);
+          state.selected.clear();
+          renderTabs();
+          render();
+        });
+      });
+    }
+
+    function renderSummary() {
+      const rows = monthlyCastRows(state.month);
+      const assigned = rows.filter(row => castRef(row.name));
+      const settlements = state.store.referrers.map(ref => settlementFor(ref, state.month));
+      const currentFee = settlements.reduce((sum, row) => sum + row.currentFee, 0);
+      const carry = settlements.reduce((sum, row) => sum + row.carry, 0);
+      const stats = [
+        ['対象月女子給', yen(rows.reduce((sum, row) => sum + row.girlsPay, 0)), `${rows.length}名`],
+        ['割当済キャスト', `${assigned.length}名`, `未割当 ${rows.length - assigned.length}名`],
+        ['当月紹介料', yen(currentFee), `${state.store.referrers.length}紹介者`],
+        ['前月以前繰越', yen(carry), carry ? '未払いあり' : '未払いなし'],
+      ];
+      document.getElementById('summaryGrid').innerHTML = stats.map(([label, value, sub]) => `
+        <div class="stat">
+          <div class="label">${label}</div>
+          <div class="value ${label.includes('繰越') && carry ? 'carry' : ''}">${value}</div>
+          <div class="sub">${sub}</div>
+        </div>
+      `).join('');
+    }
+
+    function renderReferrers() {
+      document.getElementById('refCount').textContent = `${state.store.referrers.length}件`;
+      document.getElementById('assignRef').innerHTML = [
+        '<option value="">紹介者を選択</option>',
+        ...state.store.referrers.map(ref => `<option value="${ref.id}">${ref.name}（${ref.percent}%）</option>`)
+      ].join('');
+      document.getElementById('refList').innerHTML = state.store.referrers.length ? state.store.referrers.map(ref => {
+        const assignedCount = Object.values(state.store.assignments).filter(id => id === ref.id).length;
+        return `
+          <div class="ref-card">
+            <div class="swatch" style="background:${ref.color}"></div>
+            <div>
+              <div class="ref-name">${ref.name}<span class="pill">${ref.percent}%</span></div>
+              <div class="muted">割当 ${assignedCount}名</div>
+            </div>
+            <button type="button" class="danger" data-delete-ref="${ref.id}">削除</button>
+          </div>
+        `;
+      }).join('') : '<div class="empty">紹介者を登録してください</div>';
+      document.querySelectorAll('[data-delete-ref]').forEach(button => {
+        button.addEventListener('click', () => {
+          const id = button.dataset.deleteRef;
+          state.store.referrers = state.store.referrers.filter(ref => ref.id !== id);
+          for (const [name, refId] of Object.entries(state.store.assignments)) {
+            if (refId === id) delete state.store.assignments[name];
+          }
+          for (const key of Object.keys(state.store.payments)) {
+            if (key.endsWith(`|${id}`)) delete state.store.payments[key];
+          }
+          saveStore();
+          render();
+        });
+      });
+    }
+
+    function renderSettlement() {
+      const q = normalize(state.query);
+      const matchedNames = matchingCastNames(state.month, state.query);
+      const rows = state.store.referrers
+        .filter(ref => {
+          if (!q) return true;
+          if (normalize(ref.name).includes(q)) return true;
+          return assignedRowsFor(ref.id, state.month).some(row => matchedNames.has(row.name));
+        })
+        .map(ref => ({ ref, ...settlementFor(ref, state.month) }))
+        .filter(row => row.rows.length || row.carry || !q);
+      document.getElementById('settlementTitle').textContent = `紹介者別精算（${state.month}月）`;
+      document.getElementById('settlementCount').textContent = `${rows.length}件`;
+      document.getElementById('settlementBody').innerHTML = rows.length ? rows.map(row => {
+        const paidKey = monthKey(state.month, row.ref.id);
+        const paid = !!state.store.payments[paidKey];
+        const names = row.rows.map(r => r.name).join('、') || '-';
+        return `
+          <tr style="background:${row.ref.color}55">
+            <td>${row.ref.name}</td>
+            <td>${row.ref.percent}%</td>
+            <td>${names}</td>
+            <td class="pay">${yen(row.girlsPay)}</td>
+            <td class="fee">${yen(row.currentFee)}</td>
+            <td class="${row.carry ? 'carry' : ''}">${yen(row.carry)}</td>
+            <td class="fee">${yen(row.total)}</td>
+            <td><label><input type="checkbox" data-paid="${row.ref.id}" ${paid ? 'checked' : ''}> <span class="${paid ? 'paid' : 'unpaid'}">${paid ? '支払済' : '未払い'}</span></label></td>
+          </tr>
+        `;
+      }).join('') : '<tr><td class="empty" colspan="8">該当する紹介者がありません</td></tr>';
+      document.querySelectorAll('[data-paid]').forEach(input => {
+        input.addEventListener('change', () => {
+          state.store.payments[monthKey(state.month, input.dataset.paid)] = input.checked;
+          saveStore();
+          render();
+        });
+      });
+    }
+
+    function renderCast() {
+      const rows = filteredCastRows();
+      document.getElementById('castTitle').textContent = `キャスト別（${state.month}月）`;
+      document.getElementById('castCount').textContent = `${rows.length}名`;
+      document.getElementById('castBody').innerHTML = rows.length ? rows.map(row => {
+        const ref = castRef(row.name);
+        const referralFee = ref ? fee(row.girlsPay, ref.percent) : 0;
+        const paid = ref ? !!state.store.payments[monthKey(state.month, ref.id)] : false;
+        return `
+          <tr style="${ref ? `background:${ref.color}66` : ''}">
+            <td><input type="checkbox" data-select="${row.name}" ${state.selected.has(row.name) ? 'checked' : ''}></td>
+            <td>${row.name}</td>
+            <td>${ref ? `${ref.name}<span class="pill">${ref.percent}%</span>` : '<span class="muted">未割当</span>'}</td>
+            <td>${row.dates.size}</td>
+            <td>${row.records}</td>
+            <td>${yen(row.sales)}</td>
+            <td class="pay">${yen(row.girlsPay)}</td>
+            <td class="fee">${ref ? yen(referralFee) : '-'}</td>
+            <td>${ref ? `<span class="${paid ? 'paid' : 'unpaid'}">${paid ? '支払済' : '未払い'}</span>` : '-'}</td>
+          </tr>
+        `;
+      }).join('') : '<tr><td class="empty" colspan="9">該当するキャストがありません</td></tr>';
+      document.querySelectorAll('[data-select]').forEach(input => {
+        input.addEventListener('change', () => {
+          if (input.checked) state.selected.add(input.dataset.select);
+          else state.selected.delete(input.dataset.select);
+          renderSummary();
+        });
+      });
+    }
+
+    function render() {
+      renderSummary();
+      renderReferrers();
+      renderSettlement();
+      renderCast();
+    }
+
+    document.getElementById('saveRef').addEventListener('click', () => {
+      const name = document.getElementById('refName').value.trim();
+      const percent = Number(document.getElementById('refPercent').value || 0);
+      if (!name || percent < 0) return;
+      let ref = state.store.referrers.find(item => item.name === name);
+      if (ref) {
+        ref.percent = percent;
+      } else {
+        ref = {
+          id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+          name,
+          percent,
+          color: COLORS[state.store.referrers.length % COLORS.length]
+        };
+        state.store.referrers.push(ref);
+      }
+      document.getElementById('refName').value = '';
+      document.getElementById('refPercent').value = '';
+      saveStore();
+      render();
+    });
+
+    document.getElementById('assignSelected').addEventListener('click', () => {
+      const refId = document.getElementById('assignRef').value;
+      if (!refId || state.selected.size === 0) return;
+      for (const name of state.selected) state.store.assignments[name] = refId;
+      state.selected.clear();
+      saveStore();
+      render();
+    });
+
+    document.getElementById('clearSelected').addEventListener('click', () => {
+      for (const name of state.selected) delete state.store.assignments[name];
+      state.selected.clear();
+      saveStore();
+      render();
+    });
+
+    document.getElementById('toggleAll').addEventListener('click', () => {
+      const rows = filteredCastRows();
+      const allSelected = rows.every(row => state.selected.has(row.name));
+      for (const row of rows) {
+        if (allSelected) state.selected.delete(row.name);
+        else state.selected.add(row.name);
+      }
+      renderCast();
+    });
+
+    document.getElementById('searchInput').addEventListener('input', event => {
+      state.query = event.target.value;
+      renderSettlement();
+      renderCast();
+    });
+
+    document.getElementById('copyUrl').addEventListener('click', async () => {
+      await navigator.clipboard.writeText(location.href);
+      const button = document.getElementById('copyUrl');
+      const old = button.textContent;
+      button.textContent = 'コピーしました';
+      setTimeout(() => button.textContent = old, 1200);
+    });
+
+    loadData().catch(error => {
+      document.getElementById('meta').textContent = `データ読み込みエラー: ${error.message}`;
+    });
+  </script>
+</body>
+</html>
