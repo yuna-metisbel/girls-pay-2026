@@ -46,7 +46,7 @@
     }
     h1 { margin: 0; font-size: 22px; line-height: 1.2; }
     .meta { color: var(--muted); font-size: 12px; margin-top: 4px; }
-    .share, .nav-link {
+    .share {
       border: 1px solid var(--line);
       background: var(--panel);
       color: var(--text);
@@ -62,7 +62,6 @@
       justify-content: center;
       font: inherit;
     }
-    .top-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
     .controls {
       display: grid;
       grid-template-columns: minmax(220px, 360px) 1fr;
@@ -169,10 +168,7 @@
           <h1>2026年 女子給検索</h1>
           <div class="meta" id="meta">読み込み中</div>
         </div>
-        <div class="top-actions">
-          <button class="nav-link" id="openReferral" type="button">紹介料計算へ</button>
-          <button class="share" id="shareButton" type="button">URLをコピー</button>
-        </div>
+        <button class="share" id="shareButton" type="button">URLをコピー</button>
       </div>
       <div class="controls">
         <input id="searchInput" class="search" type="search" placeholder="名前で検索 例: さらん / るり / いちか">
@@ -361,16 +357,6 @@
     document.getElementById('searchInput').addEventListener('input', event => {
       state.query = event.target.value;
       render();
-    });
-
-    document.getElementById('openReferral').addEventListener('click', () => {
-      const pass = prompt('紹介料計算ページのパスワードを入力してください');
-      if (pass === 'SB') {
-        sessionStorage.setItem('referralPassOk', '1');
-        location.href = './referral.html';
-      } else if (pass !== null) {
-        alert('パスワードが違います');
-      }
     });
 
     document.getElementById('shareButton').addEventListener('click', async () => {
