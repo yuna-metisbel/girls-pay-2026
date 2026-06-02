@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>2026年 女子給検索</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --text: #172033;
+      --muted: #667085;
+      --line: #d9dee7;
+      --blue: #1f6feb;
+      --blue-soft: #e8f1ff;
+      --green: #177245;
+      --rose: #c2415d;
+      --shadow: 0 1px 2px rgba(16, 24, 40, .08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Yu Gothic", "YuGothic", "Noto Sans JP", sans-serif;
+      font-size: 14px;
+      line-height: 1.55;
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(246, 247, 249, .94);
+      border-bottom: 1px solid var(--line);
+      backdrop-filter: blur(10px);
+    }
+    .wrap { width: min(1180px, calc(100vw - 28px)); margin: 0 auto; }
+    .topbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: center;
+      padding: 16px 0 12px;
+    }
+    h1 { margin: 0; font-size: 22px; line-height: 1.2; }
+    .meta { color: var(--muted); font-size: 12px; margin-top: 4px; }
+    .share {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      color: var(--text);
+      height: 36px;
+      border-radius: 6px;
+      padding: 0 12px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      white-space: nowrap;
+    }
+    .controls {
+      display: grid;
+      grid-template-columns: minmax(220px, 360px) 1fr;
+      gap: 12px;
+      padding-bottom: 14px;
+    }
+    .search {
+      width: 100%;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--panel);
+      color: var(--text);
+      padding: 0 12px;
+      font-size: 15px;
+      box-shadow: var(--shadow);
+    }
+    .tabs { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 2px; }
+    .tab {
+      min-width: 64px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: var(--panel);
+      color: var(--text);
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      white-space: nowrap;
+    }
+    .tab.active { background: var(--blue); border-color: var(--blue); color: white; }
+    main { padding: 18px 0 32px; }
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+      min-height: 86px;
+    }
+    .stat .label { color: var(--muted); font-size: 12px; }
+    .stat .value { margin-top: 4px; font-size: 24px; font-weight: 700; letter-spacing: 0; }
+    .stat .sub { margin-top: 2px; color: var(--muted); font-size: 12px; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      align-items: baseline;
+    }
+    h2 { margin: 0; font-size: 16px; }
+    .count { color: var(--muted); font-size: 12px; }
+    .table-wrap { overflow: auto; max-height: 62vh; }
+    table { width: 100%; border-collapse: collapse; min-width: 820px; }
+    th, td {
+      border-bottom: 1px solid var(--line);
+      padding: 9px 10px;
+      text-align: right;
+      white-space: nowrap;
+    }
+    th {
+      position: sticky;
+      top: 0;
+      background: #f9fafb;
+      z-index: 1;
+      color: #344054;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    th:first-child, td:first-child, th:nth-child(2), td:nth-child(2) { text-align: left; }
+    tbody tr:hover { background: var(--blue-soft); }
+    .pay { font-weight: 700; color: var(--green); }
+    .negative { color: var(--rose); }
+    .empty { padding: 28px; text-align: center; color: var(--muted); }
+    .note { color: var(--muted); font-size: 12px; margin-top: -6px; margin-bottom: 14px; }
+    @media (max-width: 760px) {
+      .topbar { grid-template-columns: 1fr; }
+      .controls { grid-template-columns: 1fr; }
+      .summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      h1 { font-size: 19px; }
+      .stat .value { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="topbar">
+        <div>
+          <h1>2026年 女子給検索</h1>
+          <div class="meta" id="meta">読み込み中</div>
+        </div>
+        <button class="share" id="shareButton" type="button">URLをコピー</button>
+      </div>
+      <div class="controls">
+        <input id="searchInput" class="search" type="search" placeholder="名前で検索 例: さらん / るり / いちか">
+        <div class="tabs" id="monthTabs"></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="summary-grid" id="summaryGrid"></div>
+    <div class="note">表示対象: ODS「雛形 12.4(1).ods」の2026年1月-5月分。女子給は日売伝票の「女子給」列を使用。</div>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2 id="castTitle">キャスト別集計</h2>
+        <div class="count" id="castCount"></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>名前</th>
+              <th>対象月</th>
+              <th>出勤日数</th>
+              <th>件数</th>
+              <th>個人売上</th>
+              <th>女子給</th>
+              <th>差額</th>
+            </tr>
+          </thead>
+          <tbody id="castBody"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2 id="detailTitle">日別明細</h2>
+        <div class="count" id="detailCount"></div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>日付</th>
+              <th>名前</th>
+              <th>個人売上</th>
+              <th>OP</th>
+              <th>G</th>
+              <th>女子給</th>
+              <th>シート</th>
+            </tr>
+          </thead>
+          <tbody id="detailBody"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const yen = value => `${Number(value || 0).toLocaleString('ja-JP')}円`;
+    const normalize = value => String(value || '').toLowerCase().normalize('NFKC').replace(/\s+/g, '');
+    const state = { data: null, month: 'all', query: '' };
+
+    async function loadData() {
+      const response = await fetch('./girls-pay-2026.json', { cache: 'no-store' });
+      state.data = await response.json();
+      document.getElementById('meta').textContent = `${state.data.year}年 / 更新日 ${state.data.generatedAt} / ${state.data.records.length.toLocaleString('ja-JP')}件`;
+      renderTabs();
+      render();
+    }
+
+    function recordsForView() {
+      const q = normalize(state.query);
+      return state.data.records.filter(record => {
+        const monthOk = state.month === 'all' || record.month === Number(state.month);
+        const queryOk = !q || normalize(record.name).includes(q);
+        return monthOk && queryOk;
+      });
+    }
+
+    function renderTabs() {
+      const tabs = document.getElementById('monthTabs');
+      const items = [{ label: '全月', value: 'all' }, ...state.data.months.map(month => ({ label: `${month}月`, value: String(month) }))];
+      tabs.innerHTML = items.map(item => `<button type="button" class="tab ${state.month === item.value ? 'active' : ''}" data-month="${item.value}">${item.label}</button>`).join('');
+      tabs.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', () => {
+          state.month = button.dataset.month;
+          renderTabs();
+          render();
+        });
+      });
+    }
+
+    function summarize(records) {
+      const days = new Set(records.map(r => r.date));
+      const names = new Set(records.map(r => r.name));
+      const sales = records.reduce((sum, r) => sum + Number(r.sales || 0), 0);
+      const girlsPay = records.reduce((sum, r) => sum + Number(r.girlsPay || 0), 0);
+      return { days: days.size, names: names.size, records: records.length, sales, girlsPay };
+    }
+
+    function renderSummary(records) {
+      const s = summarize(records);
+      const stats = [
+        ['女子給合計', yen(s.girlsPay), `個人売上 ${yen(s.sales)}`],
+        ['対象キャスト', `${s.names.toLocaleString('ja-JP')}名`, `${s.days}日分`],
+        ['明細件数', `${s.records.toLocaleString('ja-JP')}件`, state.month === 'all' ? '1月-5月' : `${state.month}月`],
+        ['売上との差額', yen(s.sales - s.girlsPay), '個人売上 - 女子給'],
+      ];
+      document.getElementById('summaryGrid').innerHTML = stats.map(([label, value, sub]) => `
+        <div class="stat">
+          <div class="label">${label}</div>
+          <div class="value">${value}</div>
+          <div class="sub">${sub}</div>
+        </div>
+      `).join('');
+    }
+
+    function castSummary(records) {
+      const map = new Map();
+      for (const record of records) {
+        const key = record.name;
+        if (!map.has(key)) map.set(key, { name: key, dates: new Set(), records: 0, sales: 0, girlsPay: 0 });
+        const row = map.get(key);
+        row.dates.add(record.date);
+        row.records += 1;
+        row.sales += Number(record.sales || 0);
+        row.girlsPay += Number(record.girlsPay || 0);
+      }
+      return [...map.values()].sort((a, b) => b.girlsPay - a.girlsPay || a.name.localeCompare(b.name, 'ja'));
+    }
+
+    function renderCast(records) {
+      const rows = castSummary(records);
+      const monthLabel = state.month === 'all' ? '全月' : `${state.month}月`;
+      document.getElementById('castTitle').textContent = `キャスト別集計（${monthLabel}）`;
+      document.getElementById('castCount').textContent = `${rows.length.toLocaleString('ja-JP')}名`;
+      document.getElementById('castBody').innerHTML = rows.length ? rows.map(row => {
+        const diff = row.sales - row.girlsPay;
+        return `
+          <tr>
+            <td>${row.name}</td>
+            <td>${monthLabel}</td>
+            <td>${row.dates.size}</td>
+            <td>${row.records}</td>
+            <td>${yen(row.sales)}</td>
+            <td class="pay">${yen(row.girlsPay)}</td>
+            <td class="${diff < 0 ? 'negative' : ''}">${yen(diff)}</td>
+          </tr>
+        `;
+      }).join('') : '<tr><td class="empty" colspan="7">該当するキャストがありません</td></tr>';
+    }
+
+    function renderDetails(records) {
+      const rows = [...records].sort((a, b) => b.date.localeCompare(a.date) || b.girlsPay - a.girlsPay);
+      document.getElementById('detailTitle').textContent = '日別明細';
+      document.getElementById('detailCount').textContent = `${rows.length.toLocaleString('ja-JP')}件`;
+      document.getElementById('detailBody').innerHTML = rows.length ? rows.map(row => `
+        <tr>
+          <td>${row.date}</td>
+          <td>${row.name}</td>
+          <td>${yen(row.sales)}</td>
+          <td>${row.op || ''}</td>
+          <td>${row.guarantee || ''}</td>
+          <td class="pay">${yen(row.girlsPay)}</td>
+          <td>${row.sheet}</td>
+        </tr>
+      `).join('') : '<tr><td class="empty" colspan="7">該当する明細がありません</td></tr>';
+    }
+
+    function render() {
+      const records = recordsForView();
+      renderSummary(records);
+      renderCast(records);
+      renderDetails(records);
+    }
+
+    document.getElementById('searchInput').addEventListener('input', event => {
+      state.query = event.target.value;
+      render();
+    });
+
+    document.getElementById('shareButton').addEventListener('click', async () => {
+      await navigator.clipboard.writeText(location.href);
+      const button = document.getElementById('shareButton');
+      const old = button.textContent;
+      button.textContent = 'コピーしました';
+      setTimeout(() => button.textContent = old, 1200);
+    });
+
+    loadData().catch(error => {
+      document.getElementById('meta').textContent = 'データ読み込みエラー';
+      document.getElementById('summaryGrid').innerHTML = `<div class="stat"><div class="label">Error</div><div class="sub">${error.message}</div></div>`;
+    });
+  </script>
+</body>
+</html>
