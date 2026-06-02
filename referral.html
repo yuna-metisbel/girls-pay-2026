@@ -342,7 +342,7 @@
       if (pass === 'SB') {
         sessionStorage.setItem('referralPassOk', '1');
       } else {
-        document.body.innerHTML = '<main style="font-family:-apple-system,BlinkMacSystemFont,Hiragino Sans,Yu Gothic,sans-serif;padding:32px;"><h1>パスワードが必要です</h1><p>女子給検索ページから開き直してください。</p><p><a href="./">女子給検索へ戻る</a></p></main>';
+        document.body.innerHTML = '<main style="font-family:-apple-system,BlinkMacSystemFont,Hiragino Sans,Yu Gothic,sans-serif;padding:32px;"><h1>パスワードが必要です</h1><p>ページを再読み込みして、正しいパスワードを入力してください。</p></main>';
         throw new Error('Referral page password required');
       }
     }
