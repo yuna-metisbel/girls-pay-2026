@@ -337,6 +337,16 @@
   </main>
 
   <script>
+    if (sessionStorage.getItem('referralPassOk') !== '1') {
+      const pass = prompt('紹介料計算ページのパスワードを入力してください');
+      if (pass === 'SB') {
+        sessionStorage.setItem('referralPassOk', '1');
+      } else {
+        document.body.innerHTML = '<main style="font-family:-apple-system,BlinkMacSystemFont,Hiragino Sans,Yu Gothic,sans-serif;padding:32px;"><h1>パスワードが必要です</h1><p>女子給検索ページから開き直してください。</p><p><a href="./">女子給検索へ戻る</a></p></main>';
+        throw new Error('Referral page password required');
+      }
+    }
+
     const STORAGE_KEY = 'girls-pay-referral-v1';
     const COLORS = ['#fde2e2', '#e0f2fe', '#dcfce7', '#fef3c7', '#ede9fe', '#ffe4e6', '#ccfbf1', '#f5e8d8', '#e7e5e4', '#dbeafe'];
     const yen = value => `${Math.round(Number(value || 0)).toLocaleString('ja-JP')}円`;
